@@ -30,24 +30,33 @@ avl_t *avl_insert_recursive(avl_t **tree, int value)
 		(*tree)->right->parent = *tree;
 	}
 	else
-		return (NULL);
+		return (NULL); /* Duplicate value */
 
+	/* Get balance factor */
 	balance = binary_tree_balance(*tree);
 
+	/* Left Left Case */
 	if (balance > 1 && value < (*tree)->left->n)
-		return (binary_tree_rotate_right(*tree));
-	if (balance < -1 && value > (*tree)->right->n)
-		return (binary_tree_rotate_left(*tree));
-	if (balance > 1 && value > (*tree)->left->n)
+		*tree = binary_tree_rotate_right(*tree);
+
+	/* Right Right Case */
+	else if (balance < -1 && value > (*tree)->right->n)
+		*tree = binary_tree_rotate_left(*tree);
+
+	/* Left Right Case */
+	else if (balance > 1 && value > (*tree)->left->n)
 	{
 		(*tree)->left = binary_tree_rotate_left((*tree)->left);
-		return (binary_tree_rotate_right(*tree));
+		*tree = binary_tree_rotate_right(*tree);
 	}
-	if (balance < -1 && value < (*tree)->right->n)
+
+	/* Right Left Case */
+	else if (balance < -1 && value < (*tree)->right->n)
 	{
 		(*tree)->right = binary_tree_rotate_right((*tree)->right);
-		return (binary_tree_rotate_left(*tree));
+		*tree = binary_tree_rotate_left(*tree);
 	}
+
 	return (node);
 }
 
